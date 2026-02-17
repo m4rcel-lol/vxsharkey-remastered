@@ -211,10 +211,12 @@ router.get('/api/discord-embed/:domain/notes/:noteId', async (req, res, next) =>
       author: {
         name: note.user.name || note.user.username,
         icon_url: note.user.avatarUrl,
+        url: `https://${domain}/@${note.user.username}`,
       },
       description: truncateText(stripHtml(note.text || ''), 2000),
       color: 3447003, // Blue color
       timestamp: note.createdAt,
+      url: `https://${domain}/notes/${noteId}`,
       footer: {
         text: '🦈 vxsharkey • by m5rcode',
       },
