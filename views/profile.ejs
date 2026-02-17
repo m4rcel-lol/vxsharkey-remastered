@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <div class="container">
+      <div class="profile-header">
+        <% if (user.bannerUrl) { %>
+        <div class="profile-banner">
+          <img src="<%= user.bannerUrl %>" alt="Banner">
+        </div>
+        <% } %>
+        <div class="profile-info">
+          <img src="<%= user.avatarUrl %>" alt="<%= user.username %>" class="profile-avatar" onerror="this.style.display='none'">
+          <div class="profile-details">
+            <h1><%= user.name || user.username %></h1>
+            <p class="profile-handle">@<%= user.username %>@<%= domain %></p>
+            <% if (user.description) { %>
+            <div class="profile-bio"><%= user.description %></div>
+            <% } %>
+            <div class="profile-stats">
+              <span><strong><%= user.notesCount || 0 %></strong> Notes</span>
+              <span><strong><%= user.followingCount || 0 %></strong> Following</span>
+              <span><strong><%= user.followersCount || 0 %></strong> Followers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <h2>Recent Notes</h2>
+        <% if (notes && notes.length > 0) { %>
+          <% notes.forEach(note => { %>
+          <div class="timeline-note">
+            <% if (note.text) { %>
+            <div class="timeline-text">
+              <%= note.text.substring(0, 200) %><% if (note.text.length > 200) { %>...<% } %>
+            </div>
+            <% } %>
+            <% if (note.files && note.files.length > 0) { %>
+            <div class="timeline-attachments">
+              <% note.files.slice(0, 3).forEach(file => { %>
+                <% if (file.type.startsWith('image')) { %>
+                <img src="<%= file.thumbnailUrl || file.url %>" alt="" class="timeline-attachment-thumb">
+                <% } %>
+              <% }); %>
+            </div>
+            <% } %>
+            <a href="/instance/<%= domain %>/notes/<%= note.id %>" class="timeline-link">View Note →</a>
+          </div>
+          <% }); %>
+        <% } else { %>
+          <p>No notes available.</p>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

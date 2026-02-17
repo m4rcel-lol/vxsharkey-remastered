@@ -1,0 +1,33 @@
+{
+  "name": "vxsharkey",
+  "version": "1.0.0",
+  "description": "A lightweight, stateless, Alpine-optimized Sharkey/Misskey embed frontend",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "keywords": [
+    "sharkey",
+    "misskey",
+    "embed",
+    "opengraph"
+  ],
+  "author": "m5rcode",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "undici": "^6.6.0",
+    "lru-cache": "^10.2.0",
+    "sanitize-html": "^2.12.1",
+    "puppeteer-core": "^21.9.0",
+    "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
