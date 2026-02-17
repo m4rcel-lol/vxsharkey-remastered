@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/public/style.css">
+
+  <!-- OpenGraph Meta Tags -->
+  <meta property="og:type" content="<%= ogData.type %>">
+  <meta property="og:title" content="<%= ogData.title %>">
+  <meta property="og:description" content="<%= ogData.description %>">
+  <% if (ogData.image) { %>
+  <meta property="og:image" content="<%= ogData.image %>">
+  <% } %>
+  <meta property="og:url" content="<%= ogData.url %>">
+  <meta property="og:site_name" content="<%= ogData.siteName %>">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= ogData.title %>">
+  <meta name="twitter:description" content="<%= ogData.description %>">
+  <% if (ogData.image) { %>
+  <meta name="twitter:image" content="<%= ogData.image %>">
+  <% } %>
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#1a1a2e">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <div class="container">
+      <div class="note-container">
+        <div class="note-header">
+          <img src="<%= note.user.avatarUrl %>" alt="<%= note.user.username %>" class="avatar" onerror="this.style.display='none'">
+          <div class="note-user-info">
+            <div class="note-username"><%= note.user.name || note.user.username %></div>
+            <div class="note-handle">@<%= note.user.username %>@<%= domain %></div>
+          </div>
+        </div>
+
+        <div class="note-content">
+          <% if (note.cw) { %>
+          <div class="content-warning">
+            <strong>CW:</strong> <%= note.cw %>
+          </div>
+          <% } %>
+
+          <% if (note.text) { %>
+          <div class="note-text">
+            <%- sanitizeNoteContent(note.text) %>
+          </div>
+          <% } %>
+
+          <% if (note.files && note.files.length > 0) { %>
+          <div class="note-attachments attachments-<%= note.files.length %>">
+            <% note.files.forEach(file => { %>
+              <% if (file.type.startsWith('image')) { %>
+              <div class="attachment">
+                <img src="<%= file.url %>" alt="<%= file.name %>" loading="lazy">
+              </div>
+              <% } else if (file.type.startsWith('video')) { %>
+              <div class="attachment">
+                <video controls>
+                  <source src="<%= file.url %>" type="<%= file.type %>">
+                </video>
+              </div>
+              <% } else if (file.type.startsWith('audio')) { %>
+              <div class="attachment">
+                <audio controls>
+                  <source src="<%= file.url %>" type="<%= file.type %>">
+                </audio>
+              </div>
+              <% } else { %>
+              <div class="attachment attachment-file">
+                <a href="<%= file.url %>" target="_blank" rel="noopener noreferrer">
+                  📎 <%= file.name %>
+                </a>
+              </div>
+              <% } %>
+            <% }); %>
+          </div>
+          <% } %>
+
+          <% if (note.poll) { %>
+          <div class="note-poll">
+            <div class="poll-title">Poll (Read-only)</div>
+            <% note.poll.choices.forEach(choice => { %>
+            <div class="poll-choice">
+              <div class="poll-bar" style="width: <%= (choice.votes / (note.poll.votes || 1)) * 100 %>%"></div>
+              <span class="poll-text"><%= choice.text %></span>
+              <span class="poll-votes"><%= choice.votes %> votes</span>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+
+          <% if (note.renote && note.text) { %>
+          <div class="quote-note">
+            <div class="quote-header">
+              <img src="<%= note.renote.user.avatarUrl %>" alt="<%= note.renote.user.username %>" class="quote-avatar" onerror="this.style.display='none'">
+              <div class="quote-user-info">
+                <span class="quote-username"><%= note.renote.user.name || note.renote.user.username %></span>
+                <span class="quote-handle">@<%= note.renote.user.username %></span>
+              </div>
+            </div>
+            <% if (note.renote.text) { %>
+            <div class="quote-text">
+              <%- sanitizeNoteContent(note.renote.text) %>
+            </div>
+            <% } %>
+            <% if (note.renote.files && note.renote.files.length > 0) { %>
+            <div class="quote-attachments">
+              <% note.renote.files.slice(0, 2).forEach(file => { %>
+                <% if (file.type.startsWith('image')) { %>
+                <img src="<%= file.thumbnailUrl || file.url %>" alt="" class="quote-attachment-preview">
+                <% } %>
+              <% }); %>
+              <% if (note.renote.files.length > 2) { %>
+              <span class="quote-more-files">+<%= note.renote.files.length - 2 %> more</span>
+              <% } %>
+            </div>
+            <% } %>
+          </div>
+          <% } %>
+        </div>
+
+        <div class="note-meta">
+          <time datetime="<%= note.createdAt %>">
+            <%= new Date(note.createdAt).toLocaleString() %>
+          </time>
+        </div>
+
+        <div class="note-actions">
+          <a href="<%= ogData.url %>" target="_blank" rel="noopener noreferrer" class="view-original-btn">
+            View on Original Instance →
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
